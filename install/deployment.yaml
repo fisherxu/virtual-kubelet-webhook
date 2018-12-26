@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: virtual-kubelet-webhook
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: virtual-kubelet-webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: virtual-kubelet-webhook
+  template:
+    metadata:
+      labels:
+        app: virtual-kubelet-webhook
+    spec:
+      serviceAccountName: virtual-kubelet-webhook-service-account
+      containers:
+      - name: webhook
+        image: virtual-kubelet-webhook:v1 
+        ports:
+        - containerPort: 8080
+

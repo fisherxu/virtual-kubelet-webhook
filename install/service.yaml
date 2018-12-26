@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: virtual-kubelet-webhook
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: virtual-kubelet-webhook
+  ports:
+    - port: 443
+      targetPort: 8080

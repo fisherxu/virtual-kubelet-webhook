@@ -248,15 +248,16 @@ func getEnv(key, defaultValue string) string {
 
 func main() {
 	addr := flag.String("addr", ":8080", "address to serve on")
-
 	http.HandleFunc("/", handler)
-
 	glog.Infof("Starting HTTPS webhook server on %+v", *addr)
+
+	namespace := getEnv("VK_NAMESPACE", "default")
 	clientset = pkg.GetClient()
 	server := &http.Server{
 		Addr:      *addr,
-		TLSConfig: pkg.ConfigTLS(clientset),
+		TLSConfig: pkg.ConfigTLS(namespace),
 	}
-	go pkg.SelfRegistration(clientset, pkg.CaCert)
+
+	go pkg.SelfRegistration(clientset, namespace)
 	server.ListenAndServeTLS("", "")
 }

@@ -6,6 +6,8 @@ ENV GOPATH /go
 COPY . /go/src/github.com/virtual-kubelet-webhook
 WORKDIR /go/src/github.com/virtual-kubelet-webhook
 
-RUN go build cmd/
+RUN go build ./
 
-RUN cp cmd/cmd /usr/bin/virtual-kubelet-webhook
+RUN cp ./virtual-kubelet-webhook /usr/bin/virtual-kubelet-webhook
+
+ENTRYPOINT [ "/usr/bin/virtual-kubelet-webhook" ]
