@@ -47,7 +47,6 @@ func ConfigTLS(namespace string) *tls.Config {
 // register this example webhook admission controller with the kube-apiserver
 // by creating externalAdmissionHookConfigurations.
 func SelfRegistration(clientset *kubernetes.Clientset, namespace string) {
-	time.Sleep(2 * time.Second)
 	client := clientset.AdmissionregistrationV1beta1().MutatingWebhookConfigurations()
 	_, err := client.Get("virtual-kubelet-webhook", metav1.GetOptions{})
 	if err == nil {
@@ -83,6 +82,15 @@ func SelfRegistration(clientset *kubernetes.Clientset, namespace string) {
 						Name:      "virtual-kubelet-webhook",
 					},
 					CABundle: CaCert,
+				},
+				NamespaceSelector: &metav1.LabelSelector{
+					MatchExpressions: []metav1.LabelSelectorRequirement{
+						{
+							Key:      "virtual-kubelet-ns",
+							Operator: metav1.LabelSelectorOpNotIn,
+							Values:   []string{"cci"},
+						},
+					},
 				},
 			},
 		},

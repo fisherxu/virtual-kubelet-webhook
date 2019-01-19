@@ -258,6 +258,6 @@ func main() {
 		TLSConfig: pkg.ConfigTLS(namespace),
 	}
 
-	go pkg.SelfRegistration(clientset, namespace)
+	pkg.SelfRegistration(clientset, namespace)
 	server.ListenAndServeTLS("", "")
 }
