@@ -3,7 +3,7 @@ package pkg
 import (
 	"crypto/tls"
 	"fmt"
-	"time"
+	"strings"
 
 	"k8s.io/api/admissionregistration/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -49,9 +49,11 @@ func ConfigTLS(namespace string) *tls.Config {
 func SelfRegistration(clientset *kubernetes.Clientset, namespace string) {
 	client := clientset.AdmissionregistrationV1beta1().MutatingWebhookConfigurations()
 	_, err := client.Get("virtual-kubelet-webhook", metav1.GetOptions{})
-	if err == nil {
-		if err2 := client.Delete("virtual-kubelet-webhook", nil); err2 != nil {
-			glog.Fatal(err2)
+	if err != nil && !strings.Contains(err.Error(), "not found") {
+		glog.Fatal(err)
+	} else if err == nil {
+		if err := client.Delete("virtual-kubelet-webhook", nil); err != nil {
+			glog.Fatal(err)
 		}
 	}
 
